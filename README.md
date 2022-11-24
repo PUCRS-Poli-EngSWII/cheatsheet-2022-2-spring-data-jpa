@@ -44,6 +44,8 @@
 
 ## Spring Data JPA
 ### O que é
+É um projeto que está dentro do sistema Spring, que auxilia na produção da camada de persistência da aplicação. **Spring Data JPA** se assemelha a uma camada de abstração acima do JPA.
+O JPA ajuda a abstrair o banco de dados e consultas, transformando tudo em objeto relacional, já o **Spring Data JPA** ajuda na criação dos repositórios, dentro do framework existem diversas ferramentas uteis para todas as aplicações, sem precisar implementar nada adicional.
 ## Classes e Interfaces
 ## Anotações
 ### Exemplos
@@ -76,5 +78,3 @@
 ### Exemplos
 ### Autorização (com roles) de RestControllers e Beans
 ### Exemplos
-
-
