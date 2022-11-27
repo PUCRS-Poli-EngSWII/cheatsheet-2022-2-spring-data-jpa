@@ -50,6 +50,7 @@ O JPA ajuda a abstrair o banco de dados e consultas, transformando tudo em objet
 ## Anotações
 Há as seguintes anotações disponíveis no Spring Data JPA:
 1. @Query
+
 Define uma implementação de uma consulta com o Java Persistence Query Language (JPQL) para um repositório.
 
 Exemplo:
@@ -58,6 +59,7 @@ Exemplo:
 Estudante getStudentByEnrollment(@Param("matricula") String matricula);
 ```
 2. @Procedure
+
 Define o armazenamento de procedimentos que podem ser chamados pelo repositório
 
 Exemplo de um procedimento:
@@ -87,6 +89,7 @@ Esse procedimento acima pode ser chamado assim:
 long getStudentsCount(@Param("matricula") String matricula);
 ```
 3. @Lock
+
 Através dessa anotação é possível definir um acesso exclusivo ao dado quando for executar um query no repositório. Essa anotação possuí bastante importância quando se precisa garantir que nenhuma outra transação modifique aquele dado.
 
 Há vários modos disponíveis:
@@ -116,6 +119,7 @@ Exemplo:
 void changeStudentName(@Param("matricula") String matricula, @Param("name") String name);
 ```
 5. @EnableJpaRepositories
+
 Essa anotação indica que repositórios JPA serão usados no projeto. Essa anotação é usada em conjunto com a @Configuration
 ```
 @Configuration
