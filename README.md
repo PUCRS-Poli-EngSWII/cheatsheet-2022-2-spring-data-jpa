@@ -224,8 +224,124 @@ public class Endereco {
 ### Como usar
 ### Exemplos
 ## Testes Unitários e Mocks com Repositórios
-### Como fazer
-### Exemplos
+Para testar o repositório é recomendado utilizar um banco em memória, para evitar problemas no banco de produção.
+Com isso, é preciso adicionar a dependência que será responsável pelo banco em memória.
+```
+<dependecy>
+  <groupId>com.h2database</groupId>
+  <artifactId>h2</artifactId>
+  <scope>test</scope>
+</dependecy>
+```
+Iniciando a implantação, é preciso adicionar algumas anotações para que possamos testar unitariamente
+
+- **@RunWith(SpringRunner.class)**
+Permite lançar um contexto de aplicação para o teste (SpringTestContext)
+
+- **@DataJpaTest**
+Responsável por fazer várias configurações que facilitam na criação dos testes
+
+- **@Autowired**
+Para a injeção do repositório que desejamos testar
+
+Exemplo teste unitário de repositório:
+```
+@RunWith(SpringRunner.class)
+@DataJpaTest
+public class StudentRepositoryTest {
+
+	@Autowired
+	private StudentRepository studentRepository;
+
+	@Test
+	public void createShouldPersistData(){
+		Student student = new Student( name: "Alex", email: "alexelias@pucrs.com.br");
+		this.studentRepository.save(student) ;
+		assertThat (student.getId()).isNotNull() ;
+		assertThat (student.getName()).isEqualTo("Alex") ;
+		assertThat (student.getEmail()).isEqualTo("alexelias@pucrs.com.br") ;
+	}
+
+	@Test
+	public void deleteShouldPersistData(){
+		Student student = new Student( name: "Alex", email: "alexelias@pucrs.com.br") ;
+		this.studentRepository.save(student);
+		studentRepository.delete(student) ;
+		assertThat (studentRepository.findOne(student.getId())).isNull() ;
+	}
+}
+```
+
+Para mockarmos um repositório é preciso utilizar a anotação:
+- **@MockBean**
+
+No teste, para utilizarmos o mock, precisamos usar a biblioteca **Mockito**. A função Mockito.when("Metodo a ser mockado").thenReturn("o que deve ser retornado") é responsável por mockar o resposotório.
+
+Exemplo de mock com repositório:
+```
+public class VendaServiceTest extends AplicationConfigTest {
+
+    @MockBean
+    private VendaRepository repository;
+
+    @MockBean
+    private EstoqueService estoqueService;
+
+    @MockBean
+    private ClienteRepository clienteRepository;
+
+    @MockBean
+    private TitulosReceberService titulosReceberService;
+
+    @Autowired
+    private VendaService vendaService;
+
+    @Test
+    @DisplayName("deve efetuar uma venda")
+    public void deveEfetuarVenda() {
+        VendaDto.ItemVendaDto item = VendaDto.ItemVendaDto.builder()
+                .produtoId("id")
+                .valorUnitario(BigDecimal.TEN)
+                .quantidade(BigDecimal.ONE)
+                .build();
+
+        List<VendaDto.ItemVendaDto> itens = Collections.singletonList(item);
+        VendaDto dto = VendaDto.builder()
+                .itens(itens)
+                .cliente(null)
+                .valorRecebido(BigDecimal.TEN)
+                .mobile(true)
+                .build();
+
+        Venda venda = Mockito.mock(Venda.class);
+        Mockito.when(repository.save(ArgumentMatchers.any(Venda.class))).thenReturn(venda);
+
+        vendaService.efetuarVenda(dto);
+
+        Mockito.verify(clienteRepository, Mockito.never()).findById(ArgumentMatchers.anyString());
+        Mockito.verify(titulosReceberService, Mockito.times(1)).gerarTituloAPartirVenda(ArgumentMatchers.eq(venda), dto);
+        Mockito.verify(repository, Mockito.times(1)).save(ArgumentMatchers.any(Venda.class));
+        Mockito.verify(estoqueService, Mockito.times(1)).reduzirNoEstoque(ArgumentMatchers.anyString(), ArgumentMatchers.any(BigDecimal.class));
+    }
+
+    @Test
+    @DisplayName("deve remover uma venda")
+    public void deveRemoverVenda() {
+        String vendaId = "id-mock";
+        Venda venda = Mockito.mock(Venda.class);
+        Mockito.when(venda.getValorRecebido()).thenReturn(BigDecimal.TEN);
+        Mockito.when(venda.getItens()).thenReturn(Collections.emptyList());
+        Mockito.when(venda.getValorTotal()).thenReturn(BigDecimal.TEN);
+        Optional<Venda> vendaOptoOptional = Optional.of(venda);
+        Mockito.when(repository.findById(ArgumentMatchers.eq(vendaId))).thenReturn(vendaOptoOptional);
+
+        vendaService.removerVenda(vendaId);
+        Mockito.verify(repository, Mockito.times(1)).delete(ArgumentMatchers.any(Venda.class));
+        Mockito.verify(estoqueService, Mockito.never()).adicionarNoEstoque(ArgumentMatchers.any(), ArgumentMatchers.any());
+        Mockito.verify(titulosReceberService, Mockito.never()).removerTitulo(ArgumentMatchers.any());
+    }
+}
+```
 ------------------------------------
 # Grupo 5
 
