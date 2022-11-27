@@ -209,7 +209,6 @@ public class Endereco {
     private Estudante estudante;
 }
 ```
-### Exemplos
 ## Cookbook
 ### Como usar
 ### Exemplos
