@@ -48,8 +48,8 @@
 O JPA ajuda a abstrair o banco de dados e consultas, transformando tudo em objeto relacional, já o **Spring Data JPA** ajuda na criação dos repositórios, dentro do framework existem diversas ferramentas uteis para todas as aplicações, sem precisar implementar nada adicional.
 ## Classes e Interfaces
 ## Anotações
-Há as seguintes anotações disponíveis no Spring Data JPA:
-1. @Query
+Há diversas anotações disponíveis no Spring Data JPA, tais como:
+- @Query
 
 Define uma implementação de uma consulta com o Java Persistence Query Language (JPQL) para um repositório.
 
@@ -58,7 +58,7 @@ Exemplo:
 @Query("FROM Estudante e WHERE e.matricula = :matricula");
 Estudante getStudentByEnrollment(@Param("matricula") String matricula);
 ```
-2. @Procedure
+- @Procedure
 
 Define o armazenamento de procedimentos que podem ser chamados pelo repositório
 
@@ -88,7 +88,7 @@ Esse procedimento acima pode ser chamado assim:
 @Procedure(name = "count_estudantes")
 long getStudentsCount(@Param("matricula") String matricula);
 ```
-3. @Lock
+- @Lock
 
 Através dessa anotação é possível definir um acesso exclusivo ao dado quando for executar um query no repositório. Essa anotação possuí bastante importância quando se precisa garantir que nenhuma outra transação modifique aquele dado.
 
@@ -108,7 +108,7 @@ Exemplo:
 @Query("FROM Estudante e WHERE e.matricula = :matricula");
 Estudante getStudentByEnrollment(@Param("matricula") String matricula);
 ```
-4. @Modifying
+- @Modifying
 
 Define que um dado do repositório será modificado.
 
@@ -118,7 +118,7 @@ Exemplo:
 @Query("UPDATE Estudante e SET e.name = :name WHERE e.matricula = :matricula")
 void changeStudentName(@Param("matricula") String matricula, @Param("name") String name);
 ```
-5. @EnableJpaRepositories
+- @EnableJpaRepositories
 
 Essa anotação indica que repositórios JPA serão usados no projeto. Essa anotação é usada em conjunto com a @Configuration
 ```
@@ -135,6 +135,80 @@ class JPAConfiguration {}
 ```
 
 ## Anotações de Mapeamento
+Há cerca de diversas anotações de mapeamento no Spring Data JPA. Muitas dessas derivadas do próprio JPA. O exemplo de algumas são:
+
+- @Entity
+
+Define uma entidade para armazenar um objeto. 
+Também é usada para especificar que um repositório pertence ao Spring Data JPA.
+
+Exemplo:
+```
+@Entity
+public class Estudante {}
+
+// Repositório
+interface EstudanteRepository extends Repository<Estudante, String> { … }
+```
+- @Id
+
+Essa anotação é utilizada para mapear qual campo estará relacionado a chave primária na tabela do banco. Essa anotação é obrigatória.
+
+Exemplo com a entidade estudante:
+```
+@Entity
+public class Estudante {
+    @Id
+    private String matricula;
+}
+```
+- @Table
+
+É usado para definir o nome da tabela que será relacionada a entidade no banco. 
+
+Exemplo com a entidade estudante:
+```
+@Table(name = "estudante")
+@Entity
+public class Estudante {
+    @Id
+    private String matricula;
+}
+```
+- @OneToOne
+
+Define um relacionamento de um para um entre duas entidades. Essa anotação é usada nas propriedades que terão essa ligação.
+
+Exemplo com a entidade estudante:
+
+```
+@Table(name = "estudante")
+@Entity
+public class Estudante {
+    @Id
+    private String matricula;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "endereco_id", referencedColumnName = "id")
+    private Endereco endereco;
+}
+```
+
+No caso acima, a entidade endereço possui uma ligação um pra um com um estudante. É usada a anotação @JoinColumn para mapear a entidade endereço através do seu id.
+
+Quanto a entidade endereço:
+
+```
+@Table(name = "endereco")
+@Entity
+public class Endereco {
+    @Id
+    private Long id;
+
+    @OneToOne(mappedBy = "endereco")
+    private Estudante estudante;
+}
+```
 ### Exemplos
 ## Cookbook
 ### Como usar
