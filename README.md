@@ -43,9 +43,20 @@
 # Grupo 4 
 
 ## Spring Data JPA
-### O que é
 É um projeto que está dentro do sistema Spring, que auxilia na produção da camada de persistência da aplicação. **Spring Data JPA** se assemelha a uma camada de abstração acima do JPA.
 O JPA ajuda a abstrair o banco de dados e consultas, transformando tudo em objeto relacional, já o **Spring Data JPA** ajuda na criação dos repositórios, dentro do framework existem diversas ferramentas uteis para todas as aplicações, sem precisar implementar nada adicional.
+O **Spring Data JPA** é parte da família Spring Data que facilita a implementação de repositórios baseados em JPA. Ele facilita a construção de aplicações baseadas em Spring Data que utilizam tecnologias de acesso a dados.
+Muito código clichê deve ser escrito para executar consultas simples, bem como realizar paginação e auditoria. O Spring Data JPA visa melhorar significativamente as implementações da camada de acesso aos dados, reduzindo as despesas gerais para o que é 
+realmente necessário.
+
+### Características
+- Suporte sofisticado para construir repositórios baseados em Spring e JPA
+- Suporte para predicados Querydsl e, portanto, consultas JPA de tipo seguro
+- Auditoria transparente da classe de domínio
+- Suporte a paginação, execução de consulta dinâmica, capacidade de integrar código de acesso a dados personalizados
+- Validação de **@Queryconsultas** anotadas em tempo de bootstrap
+- Suporte para mapeamento de entidades baseado em XML
+- Configuração de repositório baseada em JavaConfig introduzindo **@EnableJpaRepositories**.
 ## Classes e Interfaces
 ## Anotações
 Há diversas anotações disponíveis no Spring Data JPA, tais como:
