@@ -57,6 +57,63 @@ Muito código clichê deve ser escrito para executar consultas simples, bem como
 - Suporte para mapeamento de entidades baseado em XML
 - Configuração de repositório baseada em JavaConfig introduzindo **@EnableJpaRepositories**.
 ## Classes e Interfaces
+Classes e interfaces reduzem a complexidade e a quantidade de código fonte que seria de responsabilidade do programador nas operações de CRUD.
+
+O Spring Data JPA consegue relacionar uma tabela com uma classe e as colunas desta tabela como os atributos da classe:
+
+```
+@Entity
+@Table(name = "disciplinas")
+public class Disciplina {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private long id;
+
+  @Column(name = "codigo_disciplina")
+  private String codigoDisciplina;
+
+  @Column(name = "nome")
+  private String nome;
+
+  public long getId() {
+    return id;
+  }
+
+  public String getCodigoDisciplina() {
+    return codigoDisciplina;
+  }
+
+  public void setCodigoDisciplina(String codigoDisciplina) {
+    this.codigoDisciplina = codigoDisciplina;
+  }
+
+  public String getNome() {
+    return nome;
+  }
+
+  public void setNome(String nome) {
+    this.nome = nome;
+  }
+
+  public Disciplina(String codigoDisciplina, String nome) {
+    this.codigoDisciplina = codigoDisciplina;
+    this.nome = nome;
+  }
+
+  @Override
+	public String toString() {
+		return "Tutorial [codigoDisciplina=" + codigoDisciplina + ", nome=" + nome "]";
+	}
+}
+```
+Precisamos criar uma interface específica para cada classe de entidade e, dentro delas, estender a interface **JpaRepository**. Ao herdar a interface **JpaRepository**, fornece métodos do CRUD, tais como: **delete**, **save**, **find** e etc. Exemplo de interface da classe **Disciplina**:
+
+```
+public interface DisciplinaRepository extends JpaRepository<Disciplina, Long> {
+  Disciplina findByCodigoDisciplinaAndTurma(String codigoDisciplina, int turma);
+}
+```
 ## Anotações
 Há diversas anotações disponíveis no Spring Data JPA, tais como:
 - @Query
